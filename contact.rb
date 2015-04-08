@@ -1,52 +1,38 @@
-require 'csv'
-
 class Contact
  
-  attr_accessor :name, :email
+  attr_accessor :name, :email, :phone_numbers
 
-  def initialize(name, email)
+  def initialize(name, email, phone_numbers)
     @name = name
     @email = email
-    # TODO: assign local variables to instance variables
+    @phone_numbers = phone_numbers
   end
  
   def to_s
-    puts "Contact's name is #{@name} and their email is #{@email}"
-    # TODO: return string representation of Contact
+    message = "Contact's name is #{@name}, their email is #{@email} and they have #{phone_numbers.size} phone numbers:\n"
+    phone_numbers.each { |phone| message << phone.to_s + "\n" }
+    message
   end
  
-  ## Class Methods
+
   class << self
 
-    def create(name, email)
-      new_contact = Contact.new(name, email)
-      ContactDatabase.save(new_contact.name, new_contact.email)
+    def create(name, email, phone_numbers=[])
+      new_contact = Contact.new(name, email, phone_numbers)
+      ContactDatabase.save(new_contact)
       puts "Your new contact has the id of #{ContactDatabase.contact_id}"
-      # TODO: Will initialize a contact as well as add it to the list of contacts
     end
  
     def find(identifier)
-      if CSV.readlines('contacts.csv').each { |raw_contact|  
-        if raw_contact.include?(identifier)
-          located_contact = Contact.new(raw_contact[0], raw_contact[1])
-          puts located_contact
-        end
-      }
-      end
-
-      # TODO: Will find and return contact by index
+      puts ContactDatabase.find_contact_by_name(identifier)
     end
  
     def all
-      ContactDatabase.list_all
-      # TODO: Return the list of contacts, as is
+      puts ContactDatabase.list_all
     end
     
-    def show(id)
-      raw_contact = ContactDatabase.find_contact(id)
-      located_contact = Contact.new(raw_contact[0], raw_contact[1])
-      puts located_contact
-      # TODO: Show a contact, based on ID
+    def show(identifier)
+      puts ContactDatabase.find_contact_by_id(identifier)
     end
     
   end
